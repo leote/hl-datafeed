@@ -140,7 +140,7 @@ async def main():
     
     current_time = datetime.datetime.now().strftime('%H:%M:%S.%f')[:-3]
     print("=" * 80)
-    print(f"[{current_time}] Starting orderbook monitor for {book.coin}")
+    print(f"[{current_time}] Starting datafeed for {book.coin}")
     print("Display interval: 10ms")
     print("=" * 80)
 
@@ -158,5 +158,4 @@ if __name__ == '__main__':
         asyncio.run(main())
     except KeyboardInterrupt:
         current_time = datetime.datetime.now().strftime('%H:%M:%S.%f')[:-3]
-
         print(f"\n[{current_time}] STOPPED")
