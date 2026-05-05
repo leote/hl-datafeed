@@ -1,5 +1,6 @@
 use futures_util::{SinkExt, StreamExt};
 use std::collections::BTreeMap;
+use std::io::Write;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
@@ -165,29 +166,31 @@ async fn display_handler(book: Arc<RwLock<OrderBook>>) {
     loop {
         interval.tick().await;
         let book_guard = book.read().await;
-        
+
         if !book_guard.has_data() {
             continue;
         }
 
         let now = chrono::Local::now().format("%H:%M:%S%.3f");
-        println!(
-            "[{}] BID: {:9.2} | ASK: {:9.2} | SPREAD: {:6.4}% | LAT: {:5.0}ms",
+        print!(
+            "\r[{}] BID: {:9.2} | ASK: {:9.2} | SPREAD: {:6.4}% | LAT: {:5.0}ms",
             now,
             book_guard.best_bid,
             book_guard.best_ask,
             book_guard.spread_pct,
             book_guard.message_latency_ms
         );
+        let _ = std::io::stdout().flush();
     }
 }
 
 #[tokio::main]
 async fn main() {
-    let book = Arc::new(RwLock::new(OrderBook::new("flx:SILVER"))); // change coin if you want e.g. new("BTC")
-    
+    let book = Arc::new(RwLock::new(OrderBook::new("xyz:CL"))); // change coin if you want e.g. new("BTC")
+    let coin = "xyz:CL";
+
     println!("{}", "=".repeat(80));
-    println!("Starting datafeed for felix silver (flx:SILVER)");
+    println!("Starting datafeed for {}", coin);
     println!("Display interval: 10ms");
     println!("{}", "=".repeat(80));
 
